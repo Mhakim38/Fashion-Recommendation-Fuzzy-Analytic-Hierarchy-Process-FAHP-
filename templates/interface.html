@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion Recommender System</title>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #606c38;
+      margin: 0;
+      padding: 0;
+      color: #fefae0;
+    }
+    .container {
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+      background-color: #283618;
+      padding: 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+    }
+    .header h1 {
+      font-size: 32px;
+      color: #fefae0;
+    }
+    .content {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: #283618;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      color: #fefae0;
+    }
+    .card h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #fefae0;
+      border-radius: 4px;
+      color: #000000;
+    }
+    .slider-group {
+      margin-bottom: 16px;
+    }
+    .slider-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .slider-group input[type="range"] {
+      width: 100%;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      text-align: center;
+      background-color: #283618;
+      color: #fefae0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #606c38;
+    }
+    .recommendations div {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 1px;
+      transition: background-color 0.3s;
+      color: #000000;
+    }
+    .recommendations div:hover {
+      background: #606c38;
+      color: #fefae0;
+    }
+    .outline-button {
+      display: inline-block;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #fefae0;
+      background: transparent;
+      color: #fefae0;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .outline-button:hover {
+      background-color: #606c38;
+    }
+    .left-section {
+      display: flex;
+      gap: 16px;
+    }
+    .inputs {
+      flex: 1;
+    }
+    .sliders {
+        padding-left: 20px;
+      flex: 1;
+    }
+
+    .rec_container{
+        padding: 10px;
+        border-radius: 20px;
+        background-color: #606c38;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>FASHION RECOMMENDER SYSTEM</h1>
+    </div>
+
+    <div class="content">
+      <div class="card" style="flex: 3;">
+        <form id="recommendation-form" action="/submit_inputs" method="post">
+          <div class="content">
+            <div class="inputs">
+              <div class="input-group">
+                <label for="style">Gender</label>
+                <input type="text" id="style" name="style" placeholder="e.g., Casual, Formal, Streetwear">
+              </div>
+              <div class="input-group">
+                <label for="occasion">Usage</label>
+                <input type="text" id="occasion" name="occasion" placeholder="e.g., Female, Male, Unisex">
+              </div>
+              <div class="input-group">
+                <label for="season">Color</label>
+                <input type="text" id="season" name="season" placeholder="e.g., Summer, Winter, Spring">
+              </div>
+            </div>
+    
+            <div class="sliders">
+              <div class="slider-group">
+                <label for="usage_gender">Usage vs Gender:</label>
+                <input type="range" id="usage_gender" name="usage_gender" min="1" max="8" step="0.01" value="4.50">
+              </div>
+              <div class="slider-group">
+                <label for="usage_color">Usage vs Color:</label>
+                <input type="range" id="usage_color" name="usage_color" min="1" max="5" step="0.01" value="3.0">
+              </div>
+              <div class="slider-group">
+                <label for="gender_color">Gender vs Color:</label>
+                <input type="range" id="gender_color" name="gender_color" min="1" max="19" step="0.01" value="10.00">
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 16px;">
+            <button class="outline-button" type="reset">Reset</button>
+            <button class="outline-button" type="submit">Get Recommendations</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Section -->
+      <div class="card" style="flex: 1;">
+        <h2>Recommendations</h2>
+        <div class="rec_container">
+          <div class="recommendations" id="recommendations">
+            <div>1. </div>
+            <div>2. </div>
+            <div>3. </div>
+            <div>4. </div>
+            <div>5. </div>
+            <div>6. </div>
+            <div>7. </div>
+            <div>8. </div>
+            <div>9.  </div>
+            <div>10. </div>
+          </div>
+        </div>
+        <br>
+        <button class="outline-button" onclick="window.location.href='/details'">View Full Details</button>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById('recommendation-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const formData = new FormData(this);
+          
+          fetch('/submit_inputs', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok');
+              }
+              return response.json();
+          })
+          .then(data => {
+              console.log('Response:', data);
+    
+              // Clear previous recommendations
+              const recommendationsContainer = document.querySelector('.recommendations');
+              recommendationsContainer.innerHTML = '';
+    
+              // Check if data has recommendations
+              if (data.top_10_recommendations && Array.isArray(data.top_10_recommendations)) {
+                  data.top_10_recommendations.forEach((item, index) => {
+                      const recommendationDiv = document.createElement('div');
+                      recommendationDiv.textContent = `${index + 1}. ${item.productDisplayName} - Score: ${item.Final_Score}`;
+                      recommendationsContainer.appendChild(recommendationDiv);
+                  });
+              } else {
+                  const noRecommendationsDiv = document.createElement('div');
+                  noRecommendationsDiv.textContent = 'No recommendations available.';
+                  recommendationsContainer.appendChild(noRecommendationsDiv);
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while fetching recommendations.');
+          });
+      });
+    </script>
+  </div>
+</body>
+</html>
