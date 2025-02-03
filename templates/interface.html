@@ -224,7 +224,16 @@
               if (data.top_10_recommendations && Array.isArray(data.top_10_recommendations)) {
                   data.top_10_recommendations.forEach((item, index) => {
                       const recommendationDiv = document.createElement('div');
-                      recommendationDiv.textContent = `${index + 1}. ${item.productDisplayName} - Score: ${item.Final_Score}`;
+                      recommendationDiv.innerHTML = `
+                          ${index + 1}. ${item.productDisplayName} - Score: ${item.Final_Score}<br>
+                          Gender: ${item.gender}<br>
+                          Master Category: ${item.masterCategory}<br>
+                          Sub Category: ${item.subCategory}<br>
+                          Article Type: ${item.articleType}<br>
+                          Color: ${item.color}<br>
+                          Season: ${item.season}<br>
+                          Usage: ${item.usage}
+                      `;
                       recommendationsContainer.appendChild(recommendationDiv);
                   });
               } else {
