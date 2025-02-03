@@ -10,12 +10,6 @@ user_inputs = {
     'usage_gender': None,
     'usage_color': None,
     'gender_color': None,
-    'color': None,
-    'usage': None,
-    'gender': None,
-    'style': None, 
-    'occasion': None,
-    'season': None,
 }
 
 @app.route('/submit_inputs', methods=['POST'])
@@ -135,7 +129,7 @@ def submit_inputs():
 
             df['Rank'] = df['Final_Score'].rank(ascending=False)
 
-            top_10_recommended = df[['productDisplayName', 'Final_Score', 'Rank']].sort_values(by='Final_Score', ascending=False).head(10)
+            top_10_recommended = df[['productDisplayName', 'Final_Score', 'Rank', 'gender', 'masterCategory', 'subCategory', 'articleType', 'color', 'season', 'usage']].sort_values(by='Final_Score', ascending=False).head(10)
             print("Top 10 Recommendations:")
             print(top_10_recommended)
 
@@ -162,7 +156,7 @@ def submit_inputs():
             "all_inputs": user_inputs,
             "received_form_data": dict(request.form),
             "normalized_matrix": normalized_matrix.tolist(),
-            "top_10_recommendations": top_10_recommended.to_dict(orient='records')  # Send recommendations
+            "top_10_recommendations": recommendations  # Send recommendations
         })
 
     except Exception as e:
